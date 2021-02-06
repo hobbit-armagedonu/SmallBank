@@ -15,8 +15,7 @@ router.get('/', (req, res) => {
  */
 
 router.post('/login', async (req, res) => {
-    //TODO: use proper validation
-    console.log(JSON.stringify(req.body));
+    // TODO: use proper validation
     const { token } = req.body;
     const session = await login(token);
     res.send({ sessionId: session });
