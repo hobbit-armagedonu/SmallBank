@@ -1,4 +1,5 @@
 const express = require('express');
+const { body, validationResult } = require('express-validator');
 const individuals = require('./lib/individuals');
 const { login } = require('./lib/sessionService');
 
@@ -9,12 +10,29 @@ const router = express.Router();
     http://localhost:3000/login
  */
 
-router.post('/login', async (req, res) => {
-    // TODO: use proper validation
-    const { api_key: token } = req.body;
-    const session = await login(token);
-    res.send({ access_token: session });
-});
+const validationFormat = validationResult.withDefaults(
+    {
+        formatter: (error) => {
+            return {
+                code: 'LOG-VAL-KEY',
+                message: error.msg,
+                field: error.param,
+            };
+        }
+    },
+);
+
+router.post('/login',
+    body('api_key', 'Body parameter: api_key not provided.').exists(),
+    async (req, res) => {
+        const errors = validationFormat(req).array();
+        if (errors.length) {
+            return res.status(400).json({ errors });
+        }
+        const { api_key: token } = req.body;
+        const session = await login(token);
+        return res.send({ access_token: session });
+    });
 
 router.use('/individuals', individuals);
 
