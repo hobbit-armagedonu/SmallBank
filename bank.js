@@ -1,12 +1,10 @@
 const express = require('express');
+const routes = require('./routes');
 
 const PORT = process.env.PORT || 8080;
 const app = express();
 
-app.get('/', (req, res) => {
-    console.log('checking the service state');
-    res.send('Alive');
-});
+app.use(routes);
 
 app.listen(PORT, () => {
     console.log(`Bank server running on port: ${PORT}`);
