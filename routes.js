@@ -4,11 +4,6 @@ const { login } = require('./lib/sessionService');
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    console.log('checking the service state');
-    res.send('Alive');
-});
-
 /**
  curl -X POST -H "Content-Type: application/json" -d '{"token": "xxxx"}' \
     http://localhost:3000/login
@@ -16,9 +11,9 @@ router.get('/', (req, res) => {
 
 router.post('/login', async (req, res) => {
     // TODO: use proper validation
-    const { token } = req.body;
+    const { api_key: token } = req.body;
     const session = await login(token);
-    res.send({ sessionId: session });
+    res.send({ access_token: session });
 });
 
 router.use('/individuals', individuals);
