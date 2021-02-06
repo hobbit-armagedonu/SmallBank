@@ -12,13 +12,11 @@ const router = express.Router();
 
 const validationFormat = validationResult.withDefaults(
     {
-        formatter: (error) => {
-            return {
-                code: 'LOG-VAL-KEY',
-                message: error.msg,
-                field: error.param,
-            };
-        }
+        formatter: (error) => ({
+            code: 'LOG-VAL-KEY',
+            message: error.msg,
+            field: error.param,
+        }),
     },
 );
 
