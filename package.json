@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "createDatabase": "database/release001.sh",
+    "dropDatabase": "rm prisma/bank.sqlite"
   },
   "keywords": [],
   "author": "",
