@@ -1,0 +1,31 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./bank.sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model IndividualStatus {
+    code            String      @id
+    status_name     String
+    status_description String
+}
+
+model Individual {
+    id              String           @id
+    first_name      String 
+    last_name       String
+    date_of_birth   String
+    phone_number    String
+    email           String
+    country_code    String
+    street1         String
+    street2         String
+    city            String
+    region          String
+    postal_code     String
+    individual_status_code String
+    status          IndividualStatus  @relation(fields: [individual_status_code], references: [code])
+}
