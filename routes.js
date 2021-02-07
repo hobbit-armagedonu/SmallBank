@@ -10,10 +10,10 @@ const router = express.Router();
     http://localhost:3000/login
  */
 
-const validationFormat = validationResult.withDefaults(
+const validationErrorFormat = validationResult.withDefaults(
     {
         formatter: (error) => ({
-            code: 'LOG-VAL-KEY',
+            code: 'VAL-LOGIN',
             message: error.msg,
             field: error.param,
         }),
@@ -23,11 +23,12 @@ const validationFormat = validationResult.withDefaults(
 router.post('/login',
     body('api_key', 'Body parameter: api_key not provided.').exists(),
     async (req, res) => {
-        const errors = validationFormat(req).array();
+        const errors = validationErrorFormat(req).array();
         if (errors.length) {
             return res.status(400).json({ errors });
         }
         const { api_key: token } = req.body;
+        /* a good idea would be to base64 encode it if we're going live */
         const session = await login(token);
         return res.send({ access_token: session });
     });
