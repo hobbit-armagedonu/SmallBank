@@ -1,9 +1,9 @@
 const chai = require('chai');
 const asPromised = require('chai-as-promised');
 const { stub, spy, useFakeTimers } = require('sinon');
-const { login, getSessionPermissions } = require('../lib/sessionService');
-const fakeAuth = require('../lib/fakeAuthService');
-const { SessionCache, SESSION_EXPIRATION_TIME_SECONDS } = require('../lib/sessionDriver');
+const { login, getSessionPermissions } = require('../../lib/sessionService');
+const fakeAuth = require('../../lib/fakeAuthService');
+const { SessionCache, SESSION_EXPIRATION_TIME_SECONDS } = require('../../lib/sessionDriver');
 
 const { expect } = chai;
 chai.use(asPromised);

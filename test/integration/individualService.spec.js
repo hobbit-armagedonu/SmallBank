@@ -1,10 +1,11 @@
 const chai = require('chai');
-const { createIndividual, getIndividual } = require('../lib/individuals/individualsService');
-const { prisma } = require('../database/db');
-const { setUp } = require('./testSetup');
+const chaiAsPromised = require('chai-as-promised');
+const { createIndividual, getIndividual } = require('../../lib/individuals/individualsService');
+const { prisma } = require('../../database/db');
+const { setUp } = require('../testSetup');
 
 const { expect } = chai;
-
+chai.use(chaiAsPromised);
 setUp();
 
 describe('individualsService', () => {
