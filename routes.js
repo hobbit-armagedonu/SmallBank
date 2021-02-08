@@ -29,7 +29,13 @@ router.post('/login',
         }
         const { api_key: token } = req.body;
         /* a good idea would be to base64 encode it if we're going live */
-        const session = await login(token);
+        let session;
+        try {
+            session = await login(token);
+        } catch (e) {
+            res.status(400);
+            return res.send({ error: e.message });
+        }
         return res.send({ access_token: session });
     });
 
