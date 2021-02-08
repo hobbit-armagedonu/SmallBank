@@ -7,6 +7,11 @@ const app = express();
 app.use(express.json());
 app.use(routes);
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Bank server running on port: ${PORT}`);
 });
+
+module.exports = {
+    app,
+    server,
+};

@@ -29,6 +29,7 @@
     "eslint-plugin-react-hooks": "^1.7.0",
     "mocha": "^8.2.1",
     "prisma": "^2.16.0",
-    "sinon": "^9.2.4"
+    "sinon": "^9.2.4",
+    "supertest": "^6.1.3"
   }
 }

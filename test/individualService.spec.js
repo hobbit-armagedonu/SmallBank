@@ -1,12 +1,11 @@
 const chai = require('chai');
-const asPromised = require('chai-as-promised');
-const { stub, spy, useFakeTimers } = require('sinon');
-const { PrismaClient } = require('@prisma/client');
-const { createIndividual, getIndividual, disconnectPrisma } = require('../lib/individuals/individualsService');
-
-const prisma = new PrismaClient();
+const { createIndividual, getIndividual } = require('../lib/individuals/individualsService');
+const { prisma } = require('../database/db');
+const { setUp } = require('./testSetup');
 
 const { expect } = chai;
+
+setUp();
 
 describe('individualsService', () => {
     describe('createIndividual', () => {
@@ -30,13 +29,8 @@ describe('individualsService', () => {
             };
         });
 
-        afterEach(() => {
-            disconnectPrisma(); /* this should be done smarter */
-        });
-
         it('should save an individual to the database and return it with new id', async () => {
             const dollyCopy = await createIndividual(dolly);
-            console.log(`dolly: ${dolly.id} copy: ${dollyCopy.id}`);
             expect(dollyCopy.id).to.not.be.equal(dolly.id);
 
             return expect(prisma.individual.findUnique({
@@ -44,7 +38,6 @@ describe('individualsService', () => {
             })).to.eventually.eql(dollyCopy)
                 .then(async (newDolly) => {
                     expect(newDolly.first_name).to.be.equal(dolly.first_name);
-                    await prisma.$disconnect();
                 });
         });
     });
