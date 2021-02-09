@@ -1,7 +1,7 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const individuals = require('./lib/individuals');
-const { login } = require('./lib/sessionService');
+const { login, getSessionEntitlementsProfile } = require('./lib/sessionService');
 
 const router = express.Router();
 
@@ -19,6 +19,28 @@ const validationErrorFormat = validationResult.withDefaults(
         }),
     },
 );
+
+const getSessionEntitlements = async (req, res, next) => {
+    if (!req.headers.authorization) {
+        return res.status(403).json({ error: 'No authorization header' });
+    }
+    const authHeader = req.headers.authorization.split(' ');
+    if (authHeader[0] !== 'Bearer') {
+        return res.status(403).json({ error: 'Unsupported authorization header' });
+    }
+    const token = authHeader[1];
+    if (!token) {
+        return res.status(403).json({ error: 'Invalid token' });
+    }
+    let profile;
+    try {
+        profile = await getSessionEntitlementsProfile(token);
+        Object.assign(req, { sessionEntitlementsProfile: profile });
+        next();
+    } catch (e) {
+        return res.status(403).json({ error: 'Invalid token' });
+    }
+};
 
 router.post('/login',
     body('api_key', 'Body parameter: api_key not provided.').exists(),
@@ -39,6 +61,7 @@ router.post('/login',
         return res.send({ access_token: session });
     });
 
+router.use(getSessionEntitlements);
 router.use('/individuals', individuals);
 
 module.exports = router;
