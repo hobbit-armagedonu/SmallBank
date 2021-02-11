@@ -35,7 +35,7 @@ describe('individuals (controller)', () => {
             city: 'Austin',
             region: 'Texas',
             postal_code: 'XXXXXX',
-            individual_status_code: 'PEN',
+            status: 'pending_activation',
         };
     });
 
@@ -100,6 +100,48 @@ describe('individuals (controller)', () => {
                 .expect(200);
             expect(response.body.id).to.be.equal('fake');
             expect(createStub.callCount).to.be.equal(1);
+        });
+    });
+    describe('GET /individuals', () => {
+        it('should return single individual for a non-ADMIN/SUPPORT user', async () => {
+            sinon.stub(SessionCache.prototype, 'getSessionById').resolves(ordinaryUser);
+            const serviceStub = sinon.stub(individualService, 'getIndividual').resolves([dolly]);
+            const response = await supertest(app)
+                .get('/individuals')
+                .set('Authorization', 'Bearer function_stubbed')
+                .expect(200);
+            expect(response.body.data).to.eql([dolly]);
+            expect(serviceStub.callCount).to.be.equal(1);
+        });
+        it('should return multiple individuals for an ADMIN', async () => {
+            sinon.stub(SessionCache.prototype, 'getSessionById').resolves(admin);
+            const serviceStub = sinon.stub(individualService, 'getManyIndividuals').resolves([dolly, dolly]);
+            const response = await supertest(app)
+                .get('/individuals')
+                .set('Authorization', 'Bearer function_stubbed')
+                .expect(200);
+            expect(response.body.data.length).to.eql(2);
+            expect(serviceStub.callCount).to.be.equal(1);
+        });
+        it('should use limit, sort, start and end params', async () => {
+            const params = {
+                limit: 10,
+                sort_type: 'ASC',
+                starting_after: '123',
+                ending_before: '987',
+            };
+            sinon.stub(SessionCache.prototype, 'getSessionById').resolves(admin);
+            const serviceStub = sinon.stub(individualService, 'getManyIndividuals').resolves([dolly, dolly]);
+            await supertest(app)
+                .get('/individuals')
+                .set('Authorization', 'Bearer function_stubbed')
+                .send(params)
+                .expect(200);
+            const serviceCallArgs = serviceStub.firstCall.args;
+            expect(serviceCallArgs[0]).to.be.equal(10);
+            expect(serviceCallArgs[1]).to.be.equal('ASC');
+            expect(serviceCallArgs[2]).to.be.equal('123');
+            expect(serviceCallArgs[3]).to.be.equal('987');
         });
     });
 });

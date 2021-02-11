@@ -1,6 +1,6 @@
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
-const { createIndividual, getIndividual } = require('../../lib/individuals/individualsService');
+const { createIndividual, getIndividual, getManyIndividuals } = require('../../lib/individuals/individualsService');
 const { prisma } = require('../../database/db');
 const { setUp } = require('../testSetup');
 
@@ -41,5 +41,23 @@ describe('individualsService', () => {
                     expect(newDolly.first_name).to.be.equal(dolly.first_name);
                 });
         });
+    });
+    describe('getManyIndividuals', async () => {
+        it('returns individuals sorted desc by default', async () => {
+            const result = await getManyIndividuals();
+            expect(result.length).to.be.greaterThan(1);
+            expect(result[0].id > result[1].id).to.be.equal(true);
+        });
+        it('maps the database status to the status name', async () => {
+            const result = await getManyIndividuals();
+            const firstDolly = result.find((ind) => ind.first_name === 'Dolly');
+            expect(firstDolly.status).to.be.equal('pending_activation');
+            expect(firstDolly).not.to.have.property('individual_status_code');
+        });
+        it('limits the number of returned records', async () => {
+            const result = await getManyIndividuals(4);
+            expect(result.length).to.be.equal(4);
+        });
+        it('takes into account the startingAfter, endingBefore parameters');
     });
 });
