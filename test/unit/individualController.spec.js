@@ -1,7 +1,7 @@
 const supertest = require('supertest');
 const sinon = require('sinon');
 const { expect } = require('chai');
-const { app, server } = require('../../bank');
+const { app } = require('../../bank');
 const { setUp } = require('../testSetup');
 const { SessionCache } = require('../../lib/sessionDriver');
 const individualService = require('../../lib/individuals/individualsService');
@@ -142,6 +142,42 @@ describe('individuals (controller)', () => {
             expect(serviceCallArgs[1]).to.be.equal('ASC');
             expect(serviceCallArgs[2]).to.be.equal('123');
             expect(serviceCallArgs[3]).to.be.equal('987');
+        });
+        it('should return meaningful has_more');
+    });
+    describe('GET /individuals/:id', () => {
+        it('returns 403 for non-admin user that tries to view other individual', async () => {
+            sinon.stub(SessionCache.prototype, 'getSessionById').resolves(ordinaryUser);
+            await supertest(app)
+                .get('/individuals/notMyId')
+                .set('Authorization', 'Bearer function_stubbed')
+                .expect(403);
+        });
+        it('returns 404 when individual not found', async () => {
+            sinon.stub(SessionCache.prototype, 'getSessionById').resolves(admin);
+            sinon.stub(individualService, 'getIndividual').resolves();
+            await supertest(app)
+                .get('/individuals/notMyId')
+                .set('Authorization', 'Bearer function_stubbed')
+                .expect(404);
+        });
+        it('returns individual when asked by himself', async () => {
+            sinon.stub(SessionCache.prototype, 'getSessionById').resolves(ordinaryUser);
+            sinon.stub(individualService, 'getIndividual').resolves(dolly);
+            const result = await supertest(app)
+                .get(`/individuals/${ordinaryUser.individualId}`)
+                .set('Authorization', 'Bearer function_stubbed')
+                .expect(200);
+            expect(result.body).to.eql(dolly);
+        });
+        it('returns individual when asked by ADMIN', async () => {
+            sinon.stub(SessionCache.prototype, 'getSessionById').resolves(admin);
+            sinon.stub(individualService, 'getIndividual').resolves(dolly);
+            const result = await supertest(app)
+                .get('/individuals/anything')
+                .set('Authorization', 'Bearer function_stubbed')
+                .expect(200);
+            expect(result.body).to.eql(dolly);
         });
     });
 });
