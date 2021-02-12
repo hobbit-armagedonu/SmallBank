@@ -39,3 +39,8 @@ Tests are divided into two groups: unit and integration. Create tests under prop
 # Style
 
 If you're planning on contributing to this project please take advantage of ESlint
+
+# Note
+
+The name refers to Lieutenant Gruber's Small Tank
+https://www.youtube.com/watch?v=NcsRhNWzQEI
