@@ -1,4 +1,4 @@
-CREATE TABLE Insividual (
+CREATE TABLE Individual (
     id varchar(36) NOT NULL PRIMARY KEY,
     first_name varchar(63) NOT NULL,
     last_name varchar(127) NOT NULL,

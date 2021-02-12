@@ -1,18 +1,19 @@
 {
   "name": "SmallBank",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.0.2",
+  "description": "A draft of a bank API",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/unit test/integration",
-    "unitest": "mocha test/unit",
-    "intest": "mocha test/integration",
-    "createDatabase": "database/release001.sh",
-    "dropDatabase": "rm prisma/bank.sqlite"
+    "start-locally": "DATABASE_URL='file:./bank.sqlite' node bank.js",
+    "test": "mocha test/unit",
+    "intest": "DATABASE_URL='file:./bank.sqlite' mocha test/integration",
+    "create-local-db": "database/applyMigrationsSQLite.sh prisma/bank.sqlite",
+    "drop-local-db": "rm prisma/bank.sqlite",
+    "generate-prisma-migration": "DATABASE_URL='file:./bank.sqlite' npx prisma migrate dev --preview-feature"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "jozef.szumilo@gmail.com",
+  "license": "MIT",
   "dependencies": {
     "@prisma/client": "^2.16.0",
     "express": "^4.17.1",

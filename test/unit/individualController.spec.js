@@ -1,17 +1,18 @@
 const supertest = require('supertest');
 const sinon = require('sinon');
 const { expect } = require('chai');
-const { app } = require('../../bank');
-const { setUp } = require('../testSetup');
+const { app, server } = require('../../bank');
 const { SessionCache } = require('../../lib/sessionDriver');
 const individualService = require('../../lib/individuals/individualsService');
-
-setUp();
 
 describe('individuals (controller)', () => {
     let admin;
     let ordinaryUser;
     let dolly;
+
+    after(() => {
+        server.close();
+    });
 
     beforeEach(() => {
         admin = {
