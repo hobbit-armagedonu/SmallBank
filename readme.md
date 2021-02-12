@@ -2,6 +2,10 @@
 
 The little bank project shows the author can do things. It's not a complete working API but you can run it and enjoy the nice code.
 
+# Prerequisites
+
+To work with sqlite it's good to install sqlite3 on your machine.
+
 # Installation
 
 This API is supposed to be run on a linux OS.
@@ -39,6 +43,12 @@ Tests are divided into two groups: unit and integration. Create tests under prop
 # Style
 
 If you're planning on contributing to this project please take advantage of ESlint
+
+# Running on Windows / MacOs
+
+You should be able to run it on MacOS without issues. Not tested yet.
+Runnig it on windows will require some patience. You need to modify the .sh scripts to .bat equivalents and you shoul be fine.
+Nevertheless; install a linux and run free.
 
 # Note
 
